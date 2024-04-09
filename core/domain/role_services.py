@@ -22,11 +22,11 @@ from __future__ import absolute_import  # pylint: disable=import-only-modules
 from __future__ import unicode_literals  # pylint: disable=import-only-modules
 
 import math
-import random
 import time
 
 from core.platform import models
 import feconf
+import secrets
 
 (audit_models,) = models.Registry.import_models([models.NAMES.audit])
 
@@ -268,7 +268,7 @@ def get_role_graph_data():
 def log_role_query(user_id, intent, role=None, username=None):
     """Stores the query to role structure in RoleQueryAuditModel."""
     model_id = '%s.%s.%s.%s' % (
-        user_id, int(math.floor(time.time())), intent, random.randint(0, 1000)
+        user_id, int(math.floor(time.time())), intent, secrets.SystemRandom().randint(0, 1000)
     )
 
     audit_models.RoleQueryAuditModel(
