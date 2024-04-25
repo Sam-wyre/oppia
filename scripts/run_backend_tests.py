@@ -39,6 +39,7 @@ from . import common
 from . import install_third_party_libs
 from . import setup
 from . import setup_gae
+from security import safe_command
 
 
 DIRS_TO_ADD_TO_SYS_PATH = [
@@ -128,7 +129,7 @@ def run_shell_cmd(exe, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
     If the cmd fails, raises Exception. Otherwise, returns a string containing
     the concatenation of the stdout and stderr logs.
     """
-    p = subprocess.Popen(exe, stdout=stdout, stderr=stderr)
+    p = safe_command.run(subprocess.Popen, exe, stdout=stdout, stderr=stderr)
     last_stdout_str, last_stderr_str = p.communicate()
     # Converting to unicode to stay compatible with the rest of the strings.
     last_stdout_str = last_stdout_str.decode(encoding='utf-8')
