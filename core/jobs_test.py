@@ -507,8 +507,7 @@ class TestAdditionJobManager(TestDeferredJobManager):
     """
     @classmethod
     def _run(cls, additional_job_params):
-        total = sum([
-            numbers_model.number for numbers_model in MockNumbersModel.query()])
+        total = sum(numbers_model.number for numbers_model in MockNumbersModel.query())
         MockSumModel(id=SUM_MODEL_ID, total=total).put()
 
 
@@ -517,8 +516,7 @@ class FailingAdditionJobManager(TestDeferredJobManager):
 
     @classmethod
     def _run(cls, additional_job_params):
-        total = sum([
-            numbers_model.number for numbers_model in MockNumbersModel.query()])
+        total = sum(numbers_model.number for numbers_model in MockNumbersModel.query())
         MockSumModel(id=SUM_MODEL_ID, total=total).put()
         raise Exception('Oops, I failed.')
 
@@ -631,7 +629,7 @@ class SampleMapReduceJobManager(jobs.BaseMapReduceJobManager):
 
     @staticmethod
     def reduce(key, values):
-        yield (key, sum([int(value) for value in values]))
+        yield (key, sum(int(value) for value in values))
 
 
 class MapReduceJobForCheckingParamNames(jobs.BaseMapReduceOneOffJobManager):
@@ -910,7 +908,7 @@ class TwoClassesMapReduceJobManager(jobs.BaseMapReduceJobManager):
 
     @staticmethod
     def reduce(key, values):
-        yield [key, sum([int(value) for value in values])]
+        yield [key, sum(int(value) for value in values)]
 
 
 class TwoClassesMapReduceJobIntegrationTests(test_utils.GenericTestBase):

@@ -907,8 +907,8 @@ def _get_all_files_in_directory(dir_path, excluded_glob_patterns):
         for file_name in files:
             filepath = os.path.relpath(
                 os.path.join(_dir, file_name), os.getcwd())
-            if not any([fnmatch.fnmatch(filepath, gp) for gp in
-                        excluded_glob_patterns]):
+            if not any(fnmatch.fnmatch(filepath, gp) for gp in
+                        excluded_glob_patterns):
                 files_in_directory.append(filepath)
     return files_in_directory
 
@@ -1814,16 +1814,15 @@ class LintChecksManager( # pylint: disable=inherit-non-class
         file_content = FILE_CACHE.readlines(filepath)
         for index, regexp_to_check in enumerate(
                 pattern_list):
-            if (any([filepath.endswith(
+            if (any(filepath.endswith(
                     allowed_type) for allowed_type in (
-                        regexp_to_check['included_types'])]) and (
-                            not any([
-                                filepath.endswith(
+                        regexp_to_check['included_types'])) and (
+                            not any(filepath.endswith(
                                     pattern) for pattern in (
                                         regexp_to_check[
                                             'excluded_files'] +
                                         regexp_to_check[
-                                            'excluded_dirs'])]))):
+                                            'excluded_dirs'])))):
                 pattern_found_list.append(index)
                 for line in file_content:
                     if regexp_to_check['regexp'].search(line):
@@ -3372,8 +3371,8 @@ def main(args=None):
 
     _print_complete_summary_of_errors()
 
-    if any([message.startswith(_MESSAGE_TYPE_FAILED) for message in
-            all_messages]):
+    if any(message.startswith(_MESSAGE_TYPE_FAILED) for message in
+            all_messages):
         python_utils.PRINT('---------------------------')
         python_utils.PRINT('Checks Not Passed.')
         python_utils.PRINT('---------------------------')

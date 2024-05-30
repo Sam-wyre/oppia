@@ -72,11 +72,10 @@ class AdminHandler(base.BaseHandler):
         topic_summary_dicts = [
             summary.to_dict() for summary in topic_summaries]
         for job in unfinished_job_data:
-            job['can_be_canceled'] = job['is_cancelable'] and any([
-                klass.__name__ == job['job_type']
+            job['can_be_canceled'] = job['is_cancelable'] and any(klass.__name__ == job['job_type']
                 for klass in (
                     jobs_registry.ONE_OFF_JOB_MANAGERS + (
-                        jobs_registry.AUDIT_JOB_MANAGERS))])
+                        jobs_registry.AUDIT_JOB_MANAGERS)))
 
         queued_or_running_job_types = set([
             job['job_type'] for job in unfinished_job_data])

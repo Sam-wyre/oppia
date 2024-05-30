@@ -62,7 +62,7 @@ class SampleMapReduceJobManager(jobs.BaseMapReduceOneOffJobManager):
 
     @staticmethod
     def reduce(key, values):
-        yield (key, sum([int(value) for value in values]))
+        yield (key, sum(int(value) for value in values))
 
 
 class AdminIntegrationTest(test_utils.GenericTestBase):

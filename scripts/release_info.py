@@ -351,7 +351,7 @@ def main():
 
     for index, log in enumerate(new_release_logs):
         is_cherrypicked = all(
-            [log.sha1 != commit.sha for commit in new_commits])
+            log.sha1 != commit.sha for commit in new_commits)
         if is_cherrypicked:
             del new_release_logs[index]
 
