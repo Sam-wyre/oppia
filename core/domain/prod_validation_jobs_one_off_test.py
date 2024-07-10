@@ -21,7 +21,6 @@ from __future__ import unicode_literals  # pylint: disable=import-only-modules
 import ast
 import datetime
 import math
-import random
 import time
 import types
 
@@ -61,6 +60,7 @@ import utils
 
 from google.appengine.api import datastore_types
 from google.appengine.ext import db
+import secrets
 
 gae_search_services = models.Registry.import_search_services()
 
@@ -390,7 +390,7 @@ class RoleQueryAuditModelValidatorTests(test_utils.GenericTestBase):
 
         model_id = '%s.%s.%s.%s' % (
             self.admin_id, int(math.floor(time.time())),
-            feconf.ROLE_ACTION_UPDATE, random.randint(0, 1000))
+            feconf.ROLE_ACTION_UPDATE, secrets.SystemRandom().randint(0, 1000))
         self.model_instance = audit_models.RoleQueryAuditModel(
             id=model_id, user_id=self.admin_id,
             intent=feconf.ROLE_ACTION_UPDATE, role='c', username='d')
@@ -446,7 +446,7 @@ class RoleQueryAuditModelValidatorTests(test_utils.GenericTestBase):
     def test_model_with_invalid_id(self):
         model_invalid_id = '%s.%s.%s.%s' % (
             'a', int(math.floor(time.time())), feconf.ROLE_ACTION_UPDATE,
-            random.randint(0, 1000))
+            secrets.SystemRandom().randint(0, 1000))
         model_instance_with_invalid_id = audit_models.RoleQueryAuditModel(
             id=model_invalid_id, user_id=self.admin_id,
             intent=feconf.ROLE_ACTION_UPDATE, role='c', username='d')
@@ -5845,7 +5845,7 @@ class JobModelValidatorTests(test_utils.GenericTestBase):
 
         current_time_str = python_utils.UNICODE(
             int(utils.get_current_time_in_millisecs()))
-        random_int = random.randint(0, 1000)
+        random_int = secrets.SystemRandom().randint(0, 1000)
         self.model_instance = job_models.JobModel(
             id='test-%s-%s' % (current_time_str, random_int),
             status_code=job_models.STATUS_CODE_NEW, job_type='test',
