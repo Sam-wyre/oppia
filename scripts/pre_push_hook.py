@@ -36,6 +36,7 @@ import pprint
 import shutil
 import subprocess
 import sys
+from security import safe_command
 
 # `pre_push_hook.py` is symlinked into `/.git/hooks`, so we explicitly import
 # the current working directory so that Git knows where to find python_utils.
@@ -95,7 +96,7 @@ class ChangedBranch(python_utils.OBJECT):
 
 def _start_subprocess_for_result(cmd):
     """Starts subprocess and returns (stdout, stderr)."""
-    task = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+    task = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
     out, err = task.communicate()
     return out, err
@@ -110,7 +111,7 @@ def _get_remote_name():
     remote_name = ''
     remote_num = 0
     get_remotes_name_cmd = 'git remote'.split()
-    task = subprocess.Popen(get_remotes_name_cmd, stdout=subprocess.PIPE,
+    task = safe_command.run(subprocess.Popen, get_remotes_name_cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
     out, err = task.communicate()
     remotes = python_utils.UNICODE(out)[:-1].split('\n')
@@ -118,7 +119,7 @@ def _get_remote_name():
         for remote in remotes:
             get_remotes_url_cmd = (
                 'git config --get remote.%s.url' % remote).split()
-            task = subprocess.Popen(get_remotes_url_cmd, stdout=subprocess.PIPE,
+            task = safe_command.run(subprocess.Popen, get_remotes_url_cmd, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
             remote_url, err = task.communicate()
             if not err:
@@ -264,8 +265,7 @@ def _get_refs():
 
 def _start_linter(files):
     """Starts the lint checks and returns the returncode of the task."""
-    task = subprocess.Popen(
-        [PYTHON_CMD, '-m', LINTER_MODULE, LINTER_FILE_FLAG] + files)
+    task = safe_command.run(subprocess.Popen, [PYTHON_CMD, '-m', LINTER_MODULE, LINTER_FILE_FLAG] + files)
     task.communicate()
     return task.returncode
 
@@ -275,14 +275,14 @@ def _start_python_script(scriptname):
     cmd = [
         'python', '-m',
         os.path.join('scripts', scriptname).replace('/', '.')]
-    task = subprocess.Popen(cmd)
+    task = safe_command.run(subprocess.Popen, cmd)
     task.communicate()
     return task.returncode
 
 
 def _start_npm_audit():
     """Starts the npm audit checks and returns the returncode of the task."""
-    task = subprocess.Popen([YARN_CMD, 'audit'])
+    task = safe_command.run(subprocess.Popen, [YARN_CMD, 'audit'])
     task.communicate()
     return task.returncode
 
