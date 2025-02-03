@@ -30,6 +30,7 @@ from . import common
 from . import install_third_party_libs
 from . import setup
 from . import setup_gae
+from security import safe_command
 
 _PARSER = argparse.ArgumentParser(description="""
 The root folder MUST be named 'oppia'.
@@ -79,7 +80,7 @@ def run_performance_test(test_name, xvfb_prefix):
         xvfb_prefix: str. The XVFB prefix.
     """
     if xvfb_prefix:
-        subprocess.call([
+        safe_command.run(subprocess.call, [
             xvfb_prefix, 'python', '-m', 'scripts.run_backend_tests',
             '--test_target=core.tests.performance_tests.%s' % test_name])
     else:
@@ -114,8 +115,7 @@ def main(args=None):
     common.recursive_chmod(browsermob_proxy_path, 0o744)
 
     # Start a demo server.
-    background_process = subprocess.Popen(
-        'python %s/dev_appserver.py --host=0.0.0.0 --port=%s '
+    background_process = safe_command.run(subprocess.Popen, 'python %s/dev_appserver.py --host=0.0.0.0 --port=%s '
         '--clear_datastore=yes --dev_appserver_log_level=critical '
         '--log_level=critical --skip_sdk_update_check=true app_dev.yaml' % (
             common.GOOGLE_APP_ENGINE_HOME,

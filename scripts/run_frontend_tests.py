@@ -27,6 +27,7 @@ from . import common
 from . import install_third_party_libs
 from . import setup
 from . import setup_gae
+from security import safe_command
 
 _PARSER = argparse.ArgumentParser(description="""
 Run this script from the oppia root folder:
@@ -65,7 +66,7 @@ def main(args=None):
 
     build.main(args=[])
 
-    subprocess.call([
+    safe_command.run(subprocess.call, [
         os.path.join(common.NODE_MODULES_PATH, 'karma', 'bin', 'karma'),
         'start', os.path.join('core', 'tests', 'karma.conf.ts')])
 
@@ -74,7 +75,7 @@ def main(args=None):
 
         build.main(args=['--prod_env', '--minify_third_party_libs_only'])
 
-        subprocess.call([
+        safe_command.run(subprocess.call, [
             os.path.join(common.NODE_MODULES_PATH, 'karma', 'bin', 'karma'),
             'start', os.path.join('core', 'tests', 'karma.conf.ts'),
             '--prodEnv'])

@@ -64,6 +64,8 @@ import time
 
 # Install third party dependencies before proceeding.
 from . import install_third_party_libs
+from security import safe_command
+
 install_third_party_libs.main(args=[])
 
 # pylint: disable=wrong-import-position
@@ -868,7 +870,7 @@ def _is_path_ignored(path_to_check):
 
     # The "git check-ignore <path>" command returns 0 when the path is ignored
     # otherwise it returns 1. subprocess.call then returns this returncode.
-    if subprocess.call(command):
+    if safe_command.run(subprocess.call, command):
         return False
     else:
         return True
@@ -1412,8 +1414,7 @@ def _lint_css_files(
         if verbose_mode_enabled:
             python_utils.PRINT('Linting: ', filepath)
         proc_args = stylelint_cmd_args + [filepath]
-        proc = subprocess.Popen(
-            proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = safe_command.run(subprocess.Popen, proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         encoded_linter_stdout, encoded_linter_stderr = proc.communicate()
         linter_stdout = encoded_linter_stdout.decode(encoding='utf-8')
@@ -1470,8 +1471,7 @@ def _lint_js_and_ts_files(
         if verbose_mode_enabled:
             python_utils.PRINT('Linting: ', filepath)
         proc_args = eslint_cmd_args + [filepath]
-        proc = subprocess.Popen(
-            proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = safe_command.run(subprocess.Popen, proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         encoded_linter_stdout, encoded_linter_stderr = proc.communicate()
         linter_stdout = encoded_linter_stdout.decode(encoding='utf-8')
@@ -2087,7 +2087,7 @@ class JsTsLintChecksManager(LintChecksManager):
             '%s -target %s -typeRoots %s %s typings/*') % (
                 dir_path, allow_js, lib, no_implicit_use_strict,
                 skip_lib_check, target, type_roots, filepath)
-        subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
+        safe_command.run(subprocess.call, cmd, shell=True, stdout=subprocess.PIPE)
         compiled_js_filepath = os.path.join(
             dir_path, os.path.basename(filepath).replace('.ts', '.js'))
         return compiled_js_filepath
@@ -3202,8 +3202,7 @@ class OtherLintChecksManager(LintChecksManager):
             if self.verbose_mode_enabled:
                 python_utils.PRINT('Linting %s file' % filepath)
             with _redirect_stdout(_TARGET_STDOUT):
-                proc = subprocess.Popen(
-                    proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                proc = safe_command.run(subprocess.Popen, proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 encoded_linter_stdout, _ = proc.communicate()
                 linter_stdout = encoded_linter_stdout.decode(encoding='utf-8')

@@ -23,6 +23,7 @@ import subprocess
 import sys
 
 import python_utils
+from security import safe_command
 
 COMPILED_JS_DIR = os.path.join('local_compiled_js_for_test', '')
 TSCONFIG_FILEPATH = 'tsconfig-for-compile-check.json'
@@ -53,7 +54,7 @@ def compile_and_check_typescript():
     cmd = [
         './node_modules/typescript/bin/tsc', '--project',
         TSCONFIG_FILEPATH]
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    process = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE)
     if os.path.exists(COMPILED_JS_DIR):
         shutil.rmtree(COMPILED_JS_DIR)
     error_messages = []
