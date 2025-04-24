@@ -22,7 +22,6 @@ from __future__ import unicode_literals  # pylint: disable=import-only-modules
 import collections
 import json
 import os
-import random
 import subprocess
 import tempfile
 import threading
@@ -31,6 +30,7 @@ from core.tests import test_utils
 import python_utils
 
 from . import build
+import secrets
 
 TEST_DIR = os.path.join('core', 'tests', 'build', '')
 TEST_SOURCE_DIR = os.path.join('core', 'tests', 'build_sources')
@@ -216,7 +216,7 @@ class BuildTests(test_utils.GenericTestBase):
             build._verify_filepath_hash(base_filename, file_hashes)
 
         # Generate a random hash dict for base.html.
-        file_hashes = {base_filename: random.getrandbits(128)}
+        file_hashes = {base_filename: secrets.SystemRandom().getrandbits(128)}
         with self.assertRaisesRegexp(
             ValueError, '%s is expected to contain MD5 hash' % base_filename):
             build._verify_filepath_hash(base_filename, file_hashes)
@@ -231,7 +231,7 @@ class BuildTests(test_utils.GenericTestBase):
             build._verify_filepath_hash(bad_filepath, file_hashes)
 
         hashed_base_filename = build._insert_hash(
-            base_filename, random.getrandbits(128))
+            base_filename, secrets.SystemRandom().getrandbits(128))
         with self.assertRaisesRegexp(
             KeyError,
             'Hash from file named %s does not match hash dict values' %

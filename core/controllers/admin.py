@@ -17,7 +17,6 @@ from __future__ import absolute_import  # pylint: disable=import-only-modules
 from __future__ import unicode_literals  # pylint: disable=import-only-modules
 
 import logging
-import random
 
 from constants import constants
 from core import jobs
@@ -43,6 +42,7 @@ from core.platform import models
 import feconf
 import python_utils
 import utils
+import secrets
 
 current_user_services = models.Registry.import_current_user_services()
 
@@ -294,8 +294,8 @@ class AdminHandler(base.BaseHandler):
                                'The Science of Superheroes']
             exploration_ids_to_publish = []
             for i in python_utils.RANGE(num_dummy_exps_to_generate):
-                title = random.choice(possible_titles)
-                category = random.choice(constants.SEARCH_DROPDOWN_CATEGORIES)
+                title = secrets.choice(possible_titles)
+                category = secrets.choice(constants.SEARCH_DROPDOWN_CATEGORIES)
                 new_exploration_id = exp_fetchers.get_new_exploration_id()
                 exploration = exp_domain.Exploration.create_default_exploration(
                     new_exploration_id, title=title, category=category,

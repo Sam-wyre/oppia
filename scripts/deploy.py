@@ -42,7 +42,6 @@ from __future__ import unicode_literals  # pylint: disable=import-only-modules
 import argparse
 import datetime
 import os
-import random
 import shutil
 import string
 import subprocess
@@ -52,6 +51,8 @@ import python_utils
 from . import common
 from . import gcloud_adapter
 from . import install_third_party_libs
+import secrets
+
 # pylint: enable=wrong-import-order
 
 _PARSER = argparse.ArgumentParser()
@@ -349,7 +350,7 @@ def _execute_deployment():
 
 def get_unique_id():
     """Returns a unique id."""
-    unique_id = ''.join(random.choice(string.ascii_lowercase + string.digits)
+    unique_id = ''.join(secrets.choice(string.ascii_lowercase + string.digits)
                         for _ in python_utils.RANGE(CACHE_SLUG_PROD_LENGTH))
     return unique_id
 
