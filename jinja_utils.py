@@ -101,7 +101,7 @@ def parse_string(string, params, autoescape=True):
     Raises:
         Exception: Unable to parse string with Jinja.
     """
-    env = jinja2.Environment(autoescape=autoescape)
+    env = jinja2.Environment(autoescape=True)
 
     env.filters.update(JINJA_FILTERS)
     try:
