@@ -18,13 +18,12 @@
 from __future__ import absolute_import  # pylint: disable=import-only-modules
 from __future__ import unicode_literals  # pylint: disable=import-only-modules
 
-import random
-
 from core.platform import models
 import python_utils
 import utils
 
 from google.appengine.ext import ndb
+import secrets
 
 (base_models,) = models.Registry.import_models([models.NAMES.base_model])
 
@@ -54,7 +53,7 @@ class JobModel(base_models.BaseModel):
         job_type = entity_name
         current_time_str = python_utils.UNICODE(
             int(utils.get_current_time_in_millisecs()))
-        random_int = random.randint(0, 1000)
+        random_int = secrets.SystemRandom().randint(0, 1000)
         return '%s-%s-%s' % (job_type, current_time_str, random_int)
 
     # The job type.

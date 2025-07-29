@@ -18,7 +18,6 @@ from __future__ import unicode_literals  # pylint: disable=import-only-modules
 
 import json
 import logging
-import random
 
 from constants import constants
 from core.controllers import acl_decorators
@@ -45,6 +44,7 @@ from core.domain import user_services
 from core.platform import models
 import feconf
 import utils
+import secrets
 
 (stats_models,) = models.Registry.import_models([models.NAMES.statistics])
 
@@ -934,8 +934,7 @@ class RecommendationsHandler(base.BaseHandler):
                     exploration_id))
             filtered_exp_ids = list(
                 set(system_chosen_exp_ids) - set(author_recommended_exp_ids))
-            system_recommended_exp_ids = random.sample(
-                filtered_exp_ids,
+            system_recommended_exp_ids = secrets.SystemRandom().sample(filtered_exp_ids,
                 min(MAX_SYSTEM_RECOMMENDATIONS, len(filtered_exp_ids)))
 
         recommended_exp_ids = set(

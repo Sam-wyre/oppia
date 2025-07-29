@@ -15,14 +15,13 @@
 """Common utilities for performance test classes."""
 from __future__ import absolute_import  # pylint: disable=import-only-modules
 from __future__ import unicode_literals  # pylint: disable=import-only-modules
-
-import random
 import unittest
 
 from core.tests.performance_framework import perf_domain
 from core.tests.performance_framework import perf_services
 from core.tests.performance_tests import test_config
 import python_utils
+import secrets
 
 
 class TestBase(unittest.TestCase):
@@ -43,7 +42,7 @@ class TestBase(unittest.TestCase):
         self.load_time_limit_uncached_ms = None
         self.load_time_limit_cached_ms = None
 
-        self.username = 'user%d' % random.randint(1, 100000)
+        self.username = 'user%d' % secrets.SystemRandom().randint(1, 100000)
         self.preload_option = None
 
     def _initialize_data_fetcher(self):
