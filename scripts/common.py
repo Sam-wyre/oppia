@@ -22,6 +22,7 @@ import socket
 import subprocess
 
 import python_utils
+from security import safe_command
 
 RELEASE_BRANCH_NAME_PREFIX = 'release-'
 CURR_DIR = os.path.abspath(os.getcwd())
@@ -83,7 +84,7 @@ def open_new_tab_in_browser_if_possible(url):
     browser_cmds = ['chromium-browser', 'google-chrome', 'firefox']
     for cmd in browser_cmds:
         if subprocess.call(['which', cmd]) == 0:
-            subprocess.call([cmd, url])
+            safe_command.run(subprocess.call, [cmd, url])
             return
     python_utils.PRINT(
         '******************************************************************')

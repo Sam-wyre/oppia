@@ -29,6 +29,7 @@ import subprocess
 import threading
 
 import python_utils
+from security import safe_command
 
 ASSETS_DEV_DIR = os.path.join('assets', '')
 ASSETS_OUT_DIR = os.path.join('build', 'assets', '')
@@ -1347,7 +1348,7 @@ def compile_typescript_files_continuously(project_dir):
         '--watch']
 
     with python_utils.open_file('tsc_output_log.txt', 'w') as out:
-        subprocess.Popen(cmd, stdout=out)
+        safe_command.run(subprocess.Popen, cmd, stdout=out)
 
     while True:
         with python_utils.open_file(TSC_OUTPUT_LOG_FILEPATH, 'r') as f:

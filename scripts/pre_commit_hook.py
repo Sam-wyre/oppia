@@ -33,6 +33,7 @@ import os
 import shutil
 import subprocess
 import sys
+from security import safe_command
 
 sys.path.append(os.getcwd())
 import python_utils  # isort:skip  # pylint: disable=wrong-import-position
@@ -71,7 +72,7 @@ def _install_hook():
 
 def _start_subprocess_for_result(cmd):
     """Starts subprocess and returns (stdout, stderr)."""
-    task = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+    task = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
     out, err = task.communicate()
     return out, err
