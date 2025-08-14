@@ -29,6 +29,8 @@ import time
 
 # Install third party libraries before importing other files.
 from . import install_third_party_libs
+from security import safe_command
+
 install_third_party_libs.main(args=[])
 
 # pylint: disable=wrong-import-position
@@ -123,14 +125,14 @@ def main(args=None):
     # spam people accidentally.
     background_processes = []
     if not parsed_args.prod_env:
-        background_processes.append(subprocess.Popen([
+        background_processes.append(safe_command.run(subprocess.Popen, [
             os.path.join(common.NODE_PATH, 'bin', 'node'),
             os.path.join(common.NODE_MODULES_PATH, 'gulp', 'bin', 'gulp.js'),
             'watch']))
 
         # In prod mode webpack is launched through scripts/build.py
         python_utils.PRINT('Compiling webpack...')
-        background_processes.append(subprocess.Popen([
+        background_processes.append(safe_command.run(subprocess.Popen, [
             os.path.join(
                 common.NODE_MODULES_PATH, 'webpack', 'bin', 'webpack.js'),
             '--config', 'webpack.dev.config.ts', '--watch']))
@@ -138,8 +140,7 @@ def main(args=None):
         time.sleep(10)
 
     python_utils.PRINT('Starting GAE development server')
-    background_processes.append(subprocess.Popen(
-        'python %s/dev_appserver.py %s %s --admin_host 0.0.0.0 --admin_port '
+    background_processes.append(safe_command.run(subprocess.Popen, 'python %s/dev_appserver.py %s %s --admin_host 0.0.0.0 --admin_port '
         '8000 --host 0.0.0.0 --port %s --skip_sdk_update_check true %s' % (
             common.GOOGLE_APP_ENGINE_HOME, clear_datastore_arg,
             enable_console_arg,

@@ -26,6 +26,7 @@ import python_utils
 
 from . import common
 from . import setup
+from security import safe_command
 
 _PARSER = argparse.ArgumentParser(description="""
 Run this script from the oppia root folder:
@@ -47,7 +48,7 @@ def main(args=None):
 
     common.install_npm_library('pegjs', '0.8.0', common.OPPIA_TOOLS_DIR)
 
-    subprocess.call([
+    safe_command.run(subprocess.call, [
         os.path.join(common.NODE_MODULES_PATH, 'pegjs', 'bin', 'pegjs'),
         expression_parser_definition, expression_parser_js])
 
